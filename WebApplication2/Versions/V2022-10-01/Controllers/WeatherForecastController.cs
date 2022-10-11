@@ -4,8 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using BillingRP.Swagger;
 
-namespace WebApplication2.Controllers
+namespace WebApplication2.Versions.V2022_10_01.Controllers
 {
 	[ApiController]
 	[Route("[controller]")]
@@ -24,6 +25,13 @@ namespace WebApplication2.Controllers
 		}
 
 		[HttpGet]
+		[ArmSwaggerResource(
+			noun: "Forecasts",
+			verb: "Get",
+			Description = "Get the forecasts.",
+			Examples = new[] { typeof(WeatherForecastExample) }
+			// tags
+			)]
 		public IEnumerable<WeatherForecast> Get()
 		{
 			var rng = new Random();

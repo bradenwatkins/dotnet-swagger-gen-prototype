@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.AspNetCore.Mvc.Versioning.Conventions;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -29,6 +31,14 @@ namespace WebApplication2
 		{
 			services.AddControllers().AddNewtonsoftJson();
 			services.AddArmSwagger();
+			services
+			   .AddApiVersioning(options =>
+			   {
+				   options.ApiVersionReader = new QueryStringApiVersionReader();
+				   options.Conventions.Add(new VersionByNamespaceConvention());
+				   options.ReportApiVersions = true;
+			   })
+			   .AddVersionedApiExplorer();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

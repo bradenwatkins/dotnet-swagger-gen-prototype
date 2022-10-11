@@ -38,8 +38,6 @@ namespace BillingRP.Swagger
 				{
 					options.SwaggerEndpoint(string.Format(endpointTemplate, description.GroupName), description.GroupName);
 				}
-
-				options.RoutePrefix = string.Empty;
 			});
 
 			/* 
