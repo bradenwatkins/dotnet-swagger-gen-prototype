@@ -32,9 +32,9 @@ namespace BillingRP.Swagger
 			app.UseSwaggerUI(options =>
 			{
 				// Build a swagger endpoint for each discovered API version.
-				foreach (var groupName in descriptionProvider.ApiDescriptionGroups.GetGroupNames())
+				foreach (var versionName in descriptionProvider.ApiDescriptionGroups.GetVersions())
 				{
-					options.SwaggerEndpoint(string.Format(endpointTemplate, groupName), groupName);
+					options.SwaggerEndpoint(string.Format(endpointTemplate, versionName), versionName);
 				}
 			});
 

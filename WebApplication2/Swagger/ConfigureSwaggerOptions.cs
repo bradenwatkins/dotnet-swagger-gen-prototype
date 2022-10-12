@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
-using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
@@ -74,8 +72,27 @@ namespace BillingRP.Swagger
                 var isDeprecated = deprecatedVersions.Contains(groupName);
                 options.SwaggerDoc(groupName, new OpenApiInfo
                 {
-                    Title = $"BillingRP API {groupName}{(isDeprecated ? " (Deprecated)" : string.Empty)}",
-                    Version = groupName,
+                    Title = $"BillingRP API",
+                    Version = groupName.GetVersion(),
+                    Description = "BillingRP API",
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Billing Platform",
+                        Email = "cabbpt@microsoft.com",
+                        Url = new Uri("https://docs.microsoft.com/en-us/rest/api/billing/")
+                    }
+                });
+            }
+
+            var versions = _apiExplorer.ApiDescriptionGroups.GetVersions();
+            // Create docs for each ApiVersion.
+            foreach (var versionName in versions)
+            {
+                var isDeprecated = deprecatedVersions.Contains(versionName);
+                options.SwaggerDoc(versionName, new OpenApiInfo
+                {
+                    Title = $"BillingRP API {versionName}{(isDeprecated ? " (Deprecated)" : string.Empty)}",
+                    Version = versionName,
                     Description = "BillingRP API",
                     Contact = new OpenApiContact
                     {
@@ -93,7 +110,15 @@ namespace BillingRP.Swagger
                     return false;
                 }
 
-                return docName == apiDescription.GetGroupName();
+                if (docName.IsFullyQualified())
+                {
+                    return docName == apiDescription.GetGroupName();
+                }
+                else
+                {
+                    return docName == apiDescription.GetGroupName().GetVersion();
+                }
+
             });
 
             options.DocumentFilter<ArmDocumentFilter>();

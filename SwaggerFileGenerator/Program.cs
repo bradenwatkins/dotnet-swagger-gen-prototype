@@ -44,16 +44,19 @@ namespace SwaggerFileGenerator
 			var apiProvider = serviceProvider.GetRequiredService<IApiDescriptionGroupCollectionProvider>();
 
 			// If by version!
-			string versionPath = Path.Combine(basePath, "versions");
-			Directory.CreateDirectory(versionPath);
+			string previewPath = Path.Combine(basePath, "preview");
+            string stablePath = Path.Combine(basePath, "stable");
+            Directory.CreateDirectory(previewPath);
+            Directory.CreateDirectory(stablePath);
             foreach (var groupName in apiProvider.ApiDescriptionGroups.GetGroupNames())
             {
-				var split = groupName.Split(".");
-				var groupPath = Path.Combine(split.Take(split.Count() - 1).Prepend(versionPath).ToArray());
-				var fileName = split.Last();
-				
-				Directory.CreateDirectory(groupPath);
-                var swaggerPath = Path.Combine(groupPath, $"{fileName}.json");
+				var version = groupName.GetVersion();
+				var versionPath = version.Contains("preview")
+					? Path.Combine(previewPath, version)
+					: Path.Combine(stablePath, version);
+				Directory.CreateDirectory(versionPath);
+
+                var swaggerPath = Path.Combine(versionPath, $"{groupName.GetControllerName()}.json");
 				var swagger = swaggerProvider.GetSwagger(groupName);
 
 				// Option 1:
