@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using WebApplication2.Swagger;
 
 namespace BillingRP.Swagger
 {
@@ -22,7 +23,7 @@ namespace BillingRP.Swagger
 
         public ConfigureSwaggerOptions(
             IApiVersionDescriptionProvider provider,
-			IApiDescriptionGroupCollectionProvider apiExplorer
+            IApiDescriptionGroupCollectionProvider apiExplorer
             )
         {
             _provider = provider;
@@ -32,14 +33,14 @@ namespace BillingRP.Swagger
         public void Configure(SwaggerGenOptions options)
         {
             var deprecatedVersions = new List<string>
-            {
-                "2017-02-27-preview",
-                "2017-04-24",
-                "2017-04-24-preview",
-                "2018-03-01-preview",
-                "2018-11-01-preview",
-                "2020-10-01"
-            };
+                {
+                    "2017-02-27-preview",
+                    "2017-04-24",
+                    "2017-04-24-preview",
+                    "2018-03-01-preview",
+                    "2018-11-01-preview",
+                    "2020-10-01"
+                };
 
             // Workaround for when model class name isn't unique among all the model classes in an ApiVersion, names are much longer, however.
             // https://github.com/domaindrivendev/Swashbuckle.AspNetCore/issues/1607
@@ -66,14 +67,15 @@ namespace BillingRP.Swagger
                 return type.Name;
             });
 
+            var docNames = _apiExplorer.ApiDescriptionGroups.GetGroupNames();
             // Create docs for each ApiVersion.
-            foreach (var description in _provider.ApiVersionDescriptions)
+            foreach (var groupName in docNames)
             {
-                var isDeprecated = deprecatedVersions.Contains(description.GroupName);
-                options.SwaggerDoc(description.GroupName, new OpenApiInfo
+                var isDeprecated = deprecatedVersions.Contains(groupName);
+                options.SwaggerDoc(groupName, new OpenApiInfo
                 {
-                    Title = $"BillingRP API {description.GroupName}{(isDeprecated ? " (Deprecated)" : string.Empty)}",
-                    Version = description.GroupName,
+                    Title = $"BillingRP API {groupName}{(isDeprecated ? " (Deprecated)" : string.Empty)}",
+                    Version = groupName,
                     Description = "BillingRP API",
                     Contact = new OpenApiContact
                     {
@@ -84,26 +86,14 @@ namespace BillingRP.Swagger
                 });
             }
 
-            options.DocInclusionPredicate((versionName, apiDescription) =>
+            options.DocInclusionPredicate((docName, apiDescription) =>
             {
                 if (apiDescription.RelativePath.IndexOf("/operationResults/", StringComparison.OrdinalIgnoreCase) != -1)
                 {
                     return false;
                 }
 
-                var versionModel = apiDescription.ActionDescriptor.GetApiVersionModel(ApiVersionMapping.Implicit | ApiVersionMapping.Explicit);
-
-                if (versionModel == null)
-                {
-                    return true;
-                }
-
-                if (versionModel.DeclaredApiVersions.Any())
-                {
-                    return versionModel.DeclaredApiVersions.Any(v => v.ToString() == versionName);
-                }
-
-                return versionModel.ImplementedApiVersions.Any(v => v.ToString() == versionName);
+                return docName == apiDescription.GetGroupName();
             });
 
             options.DocumentFilter<ArmDocumentFilter>();

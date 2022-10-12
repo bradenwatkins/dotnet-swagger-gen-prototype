@@ -32,9 +32,8 @@ namespace WebApplication2
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc(c => c.Conventions.Add(new ApiExplorerGroupPerControllerConvention()));
-
-            services.AddControllers().AddNewtonsoftJson();
             services.AddArmSwagger();
+            services.AddControllers().AddNewtonsoftJson();
             services
                .AddApiVersioning(options =>
                {
@@ -46,14 +45,14 @@ namespace WebApplication2
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IApiVersionDescriptionProvider versionProvider)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IApiDescriptionGroupCollectionProvider apiExplorer)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseArmSwagger(versionProvider);
+            app.UseArmSwagger(apiExplorer);
 
             app.UseHttpsRedirection();
 

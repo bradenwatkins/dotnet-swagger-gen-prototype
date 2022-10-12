@@ -11,6 +11,7 @@ using Microsoft.OpenApi;
 using Microsoft.OpenApi.Extensions;
 using Swashbuckle.AspNetCore.Swagger;
 using WebApplication2;
+using WebApplication2.Swagger;
 
 namespace SwaggerFileGenerator
 {
@@ -40,15 +41,20 @@ namespace SwaggerFileGenerator
 
 			var serviceProvider = host.Services;
 			var swaggerProvider = serviceProvider.GetRequiredService<ISwaggerProvider>();
-			var apiProvider = serviceProvider.GetRequiredService<IApiVersionDescriptionProvider>();
+			var apiProvider = serviceProvider.GetRequiredService<IApiDescriptionGroupCollectionProvider>();
 
 			// If by version!
 			string versionPath = Path.Combine(basePath, "versions");
 			Directory.CreateDirectory(versionPath);
-			foreach (var version in apiProvider.ApiVersionDescriptions)
-			{
-				var swaggerPath = Path.Combine(versionPath, $"{version.GroupName}.json");
-				var swagger = swaggerProvider.GetSwagger(version.GroupName);
+            foreach (var groupName in apiProvider.ApiDescriptionGroups.GetGroupNames())
+            {
+				var split = groupName.Split(".");
+				var groupPath = Path.Combine(split.Take(split.Count() - 1).Prepend(versionPath).ToArray());
+				var fileName = split.Last();
+				
+				Directory.CreateDirectory(groupPath);
+                var swaggerPath = Path.Combine(groupPath, $"{fileName}.json");
+				var swagger = swaggerProvider.GetSwagger(groupName);
 
 				// Option 1:
 				// using StreamWriter streamWriter = new StreamWriter(swaggerPath);

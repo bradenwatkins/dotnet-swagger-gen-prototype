@@ -1,9 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.AspNetCore.Mvc.ApplicationModels;
-using Microsoft.AspNetCore.Mvc.Versioning;
-using Microsoft.AspNetCore.Mvc.Versioning.Conventions;
+﻿using Microsoft.AspNetCore.Mvc.ApplicationModels;
 
 namespace WebApplication2.Swagger
 {
@@ -11,12 +6,7 @@ namespace WebApplication2.Swagger
 	{
 		public void Apply(ControllerModel controller)
 		{
-			string group = controller.ControllerName;
-			if (controller.Properties.TryGetValue(typeof(ApiVersionModel), out object objectRawVersion) && objectRawVersion is ApiVersionModel version)
-			{
-				group = $"{version.DeclaredApiVersions.First()}.{controller.ControllerName}";
-			}
-			controller.ApiExplorer.GroupName = group;
+            controller.ApiExplorer.GroupName = controller.GetGroupName();
         }
 	}
 }
