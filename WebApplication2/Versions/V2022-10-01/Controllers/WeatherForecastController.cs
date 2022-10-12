@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using BillingRP.Swagger;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using BillingRP.Swagger;
 
 namespace WebApplication2.Versions.V2022_10_01.Controllers
 {
-	[ApiController]
 	[Route("[controller]")]
 	public class WeatherForecastController : ControllerBase
 	{

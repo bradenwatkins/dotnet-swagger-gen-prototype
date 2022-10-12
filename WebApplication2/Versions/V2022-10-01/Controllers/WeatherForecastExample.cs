@@ -7,7 +7,10 @@ namespace WebApplication2.Versions.V2022_10_01.Controllers
 {
 	public class WeatherForecastExample : ArmExample
 	{
-		public override Dictionary<string, object> Parameters => new Dictionary<string, object>();
+		public override Dictionary<string, object> Parameters => new Dictionary<string, object>
+		{
+			{ "api-version", "2022-10-01" }
+		};
 
 		public override Dictionary<int, ArmExampleResponse> Responses => new Dictionary<int, ArmExampleResponse>
 		{
@@ -19,7 +22,7 @@ namespace WebApplication2.Versions.V2022_10_01.Controllers
 					{
 						new WeatherForecast
 						{
-							 Date = DateTime.UtcNow,
+							 Date = new DateTime(2022, 10, 12, 10, 03, 00),
 							 Summary = "Summary",
 							 TemperatureC = 42
 						}
