@@ -66,7 +66,7 @@ namespace BillingRP.Swagger
             });
 
             var docNames = _apiExplorer.ApiDescriptionGroups.GetGroupNames();
-            // Create docs for each ApiVersion.
+            // Create docs for each Controller + ApiVersion combo. Useful for ARM swagger 2.0 docs.
             foreach (var groupName in docNames)
             {
                 var isDeprecated = deprecatedVersions.Contains(groupName);
@@ -85,7 +85,7 @@ namespace BillingRP.Swagger
             }
 
             var versions = _apiExplorer.ApiDescriptionGroups.GetVersions();
-            // Create docs for each ApiVersion.
+            // Create docs for each ApiVersion. This combines all controllers into one group. Useful for Swagger UI 3.0 docs.
             foreach (var versionName in versions)
             {
                 var isDeprecated = deprecatedVersions.Contains(versionName);
