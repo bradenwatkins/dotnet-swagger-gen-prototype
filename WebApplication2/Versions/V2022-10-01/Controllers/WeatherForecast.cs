@@ -1,6 +1,6 @@
 using System;
 
-namespace WebApplication2
+namespace WebApplication2.Versions.V2022_10_01.Controllers
 {
 	public class WeatherForecast
 	{
