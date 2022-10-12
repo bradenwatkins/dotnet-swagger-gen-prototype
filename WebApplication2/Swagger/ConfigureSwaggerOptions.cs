@@ -112,7 +112,11 @@ namespace BillingRP.Swagger
 
                 if (docName.IsFullyQualified())
                 {
-                    return docName == apiDescription.GetGroupName();
+                    var hasArmResourceAttribute = apiDescription.CustomAttributes()
+                        .OfType<ArmSwaggerResourceAttribute>()
+                        .Any();
+
+                    return hasArmResourceAttribute && docName == apiDescription.GetGroupName();
                 }
                 else
                 {
