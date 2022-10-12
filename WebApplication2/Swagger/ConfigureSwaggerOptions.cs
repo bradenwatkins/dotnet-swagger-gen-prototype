@@ -18,10 +18,15 @@ namespace BillingRP.Swagger
     public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
     {
         private readonly IApiVersionDescriptionProvider _provider;
+        private readonly IApiDescriptionGroupCollectionProvider _apiExplorer;
 
-        public ConfigureSwaggerOptions(IApiVersionDescriptionProvider provider)
+        public ConfigureSwaggerOptions(
+            IApiVersionDescriptionProvider provider,
+			IApiDescriptionGroupCollectionProvider apiExplorer
+            )
         {
             _provider = provider;
+            _apiExplorer = apiExplorer;
         }
 
         public void Configure(SwaggerGenOptions options)

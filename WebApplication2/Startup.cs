@@ -14,53 +14,57 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using WebApplication2.Swagger;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace WebApplication2
 {
-	public class Startup
-	{
-		public Startup(IConfiguration configuration)
-		{
-			Configuration = configuration;
-		}
+    public class Startup
+    {
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
 
-		public IConfiguration Configuration { get; }
+        public IConfiguration Configuration { get; }
 
-		// This method gets called by the runtime. Use this method to add services to the container.
-		public void ConfigureServices(IServiceCollection services)
-		{
-			services.AddControllers().AddNewtonsoftJson();
-			services.AddArmSwagger();
-			services
-			   .AddApiVersioning(options =>
-			   {
-				   options.ApiVersionReader = new QueryStringApiVersionReader();
-				   options.Conventions.Add(new VersionByNamespaceConvention());
-				   options.ReportApiVersions = true;
-			   })
-			   .AddVersionedApiExplorer();
-		}
+        // This method gets called by the runtime. Use this method to add services to the container.
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddMvc(c => c.Conventions.Add(new ApiExplorerGroupPerControllerConvention()));
 
-		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-		public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IApiVersionDescriptionProvider versionProvider)
-		{
-			if (env.IsDevelopment())
-			{
-				app.UseDeveloperExceptionPage();
-			}
+            services.AddControllers().AddNewtonsoftJson();
+            services.AddArmSwagger();
+            services
+               .AddApiVersioning(options =>
+               {
+                   options.ApiVersionReader = new QueryStringApiVersionReader();
+                   options.Conventions.Add(new VersionByNamespaceConvention());
+                   options.ReportApiVersions = true;
+               })
+               .AddVersionedApiExplorer();
+        }
 
-			app.UseArmSwagger(versionProvider);
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IApiVersionDescriptionProvider versionProvider)
+        {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
 
-			app.UseHttpsRedirection();
+            app.UseArmSwagger(versionProvider);
 
-			app.UseRouting();
+            app.UseHttpsRedirection();
 
-			app.UseAuthorization();
+            app.UseRouting();
 
-			app.UseEndpoints(endpoints =>
-			{
-				endpoints.MapControllers();
-			});
-		}
-	}
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
+        }
+    }
 }
