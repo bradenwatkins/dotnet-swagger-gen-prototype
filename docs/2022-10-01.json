@@ -1,5 +1,5 @@
 {
-  "openapi": "3.0.1",
+  "swagger": "2.0",
   "info": {
     "title": "BillingRP API 2022-10-01",
     "description": "BillingRP API",
@@ -20,38 +20,31 @@
           "url": "https://docs.microsoft.com/en-us/rest/api/billing/"
         },
         "operationId": "Forecasts_Get",
+        "produces": [
+          "application/json"
+        ],
         "parameters": [
           {
-            "name": "api-version",
             "in": "query",
+            "name": "api-version",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "type": "string"
           }
         ],
         "responses": {
           "200": {
             "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/WeatherForecast"
-                  }
-                }
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/WeatherForecast"
               }
             }
           },
           "default": {
             "description": "default",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ArmError"
-                }
-              }
+            "schema": {
+              "$ref": "#/definitions/ArmError"
             }
           }
         },
@@ -61,87 +54,71 @@
       }
     }
   },
-  "components": {
-    "schemas": {
-      "ArmError": {
-        "type": "object",
-        "properties": {
-          "code": {
-            "type": "string",
-            "nullable": true
-          },
-          "details": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ArmErrorDetail"
-            },
-            "nullable": true
-          },
-          "message": {
-            "type": "string",
-            "nullable": true
-          },
-          "target": {
-            "type": "string",
-            "nullable": true
+  "definitions": {
+    "ArmError": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ArmErrorDetail"
           }
         },
-        "additionalProperties": false
-      },
-      "ArmErrorDetail": {
-        "type": "object",
-        "properties": {
-          "code": {
-            "type": "string",
-            "nullable": true
-          },
-          "message": {
-            "type": "string",
-            "nullable": true
-          },
-          "target": {
-            "type": "string",
-            "nullable": true
-          }
+        "message": {
+          "type": "string"
         },
-        "additionalProperties": false
-      },
-      "WeatherForecast": {
-        "type": "object",
-        "properties": {
-          "date": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "temperatureC": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "temperatureF": {
-            "type": "integer",
-            "format": "int32",
-            "readOnly": true
-          },
-          "summary": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      }
-    },
-    "securitySchemes": {
-      "azure_auth": {
-        "type": "oauth2",
-        "description": "Azure Active Directory OAuth2 Flow.",
-        "flows": {
-          "implicit": {
-            "scopes": {
-              "user_impersonation": "impersonate your user account"
-            }
-          }
+        "target": {
+          "type": "string"
         }
       }
+    },
+    "ArmErrorDetail": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "target": {
+          "type": "string"
+        }
+      }
+    },
+    "WeatherForecast": {
+      "type": "object",
+      "properties": {
+        "date": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "temperatureC": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "temperatureF": {
+          "format": "int32",
+          "type": "integer",
+          "readOnly": true
+        },
+        "summary": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "azure_auth": {
+      "type": "oauth2",
+      "flow": "implicit",
+      "scopes": {
+        "user_impersonation": "impersonate your user account"
+      },
+      "description": "Azure Active Directory OAuth2 Flow."
     }
   },
   "examples": {
@@ -151,7 +128,7 @@
         "200": {
           "body": [
             {
-              "date": "2022-10-11T21:01:14.1559445Z",
+              "date": "2022-10-11T21:09:46.1890967Z",
               "temperatureC": 42,
               "temperatureF": 107,
               "summary": "Summary"
