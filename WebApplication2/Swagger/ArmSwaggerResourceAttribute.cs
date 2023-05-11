@@ -12,7 +12,7 @@ namespace BillingRP.Swagger
 
         public ArmSwaggerResourceAttribute(string noun, string verb)
         {
-			Operation = $"{noun}_{verb}";
+			      Operation = $"{noun}_{verb}";
         }
     }
 }
